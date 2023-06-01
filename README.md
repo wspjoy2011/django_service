@@ -66,6 +66,11 @@ Celery is an asynchronous task queue/job queue based on distributed message pass
 Celery Beat is a Celery's built-in periodic task scheduler. It is used in this project to schedule periodic tasks.
 - [Flower Official Documentation](https://flower.readthedocs.io/en/latest/)
 Flower is a web-based tool for monitoring and administrating Celery clusters. In this project, it is used to monitor the Celery tasks and workers.
+- [Gunicorn Official Documentation](https://gunicorn.org/)
+Gunicorn, also known as 'Green Unicorn', is a Python WSGI HTTP server for UNIX. It's a pre-fork worker model, which means it forks multiple worker processes to handle incoming requests. In this project, Gunicorn is used as the HTTP server to serve the Django application.
+- [Nginx Official Documentation](http://nginx.org/en/docs/)
+Nginx is a powerful, high-performance, and flexible HTTP and reverse proxy server. It's also a mail proxy server. In this project, it's used as a reverse proxy to forward requests to Gunicorn server. This improves the overall performance as Nginx can handle multiple concurrent connections and static files more efficiently than Gunicorn. It also provides additional features like load balancing and HTTP caching.
+
 
 ## Prerequisites
 
@@ -88,7 +93,7 @@ docker-compose up -d --build
 
 ## Usage
 
-1. The Swagger is accessible at `http://localhost:8080/swagger`. Use next credentials email admin@example.com, password admin.
+1. The Swagger is accessible at `http://localhost:80`. Use next credentials email admin@example.com, password admin.
 2. PGAdmin is accessible at `http://localhost:3333/`.
 3. Redis Commander is accessible at `http://localhost:8081/`.
 4. Flower (Celery monitoring tool) is accessible at `http://localhost:8082/`.

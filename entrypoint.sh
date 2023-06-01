@@ -19,4 +19,6 @@ if not User.objects.filter(username='admin').exists():
     user = User.objects.create_superuser('admin@example.com', 'admin', 'John', 'Doe', 'admin')
     Profile.objects.create(user=user, gender='male', date_of_birth='2003-05-31', bio='biography', info='info')
 EOF
-python manage.py runserver 0.0.0.0:8000
+
+gunicorn -c gunicorn.py core.wsgi:application
+

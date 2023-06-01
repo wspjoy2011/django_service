@@ -28,7 +28,7 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'django-insecure-@clhagi(s6%*8pr)@3ynxuno9t8at8v!wbs2j!!$xm85^sfu&6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -147,6 +147,7 @@ DATETIME_FORMAT = 'd b Y - H:i:s'
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'nginx', 'vol', 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -159,13 +160,8 @@ SITE_ID = 1
 
 INTERNAL_IPS = ["127.0.0.1"]
 
-if DEBUG:
-    ACCESS_TOKEN_LIFETIME = timedelta(days=1)
-    REFRESH_TOKEN_LIFETIME = timedelta(days=5)
-else:
-    ACCESS_TOKEN_LIFETIME = timedelta(minutes=5)
-    REFRESH_TOKEN_LIFETIME = timedelta(days=1)
-
+ACCESS_TOKEN_LIFETIME = timedelta(days=1)
+REFRESH_TOKEN_LIFETIME = timedelta(days=5)
 
 SIMPLE_JWT = {
         'ACCESS_TOKEN_LIFETIME': ACCESS_TOKEN_LIFETIME,

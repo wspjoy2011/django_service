@@ -19,7 +19,7 @@ from api.views.swagger import staff_protected_schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('swagger/', staff_protected_schema_view, name='schema-swagger-ui'),
+    path('', staff_protected_schema_view, name='schema-swagger-ui'),
     path('api/v1/', include('api.urls', namespace='api')),
     path('__debug__/', include('debug_toolbar.urls')),
 ]

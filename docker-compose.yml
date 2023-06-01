@@ -40,8 +40,6 @@ services:
       - .env
     volumes:
       - .:/code
-    ports:
-      - "8080:8000"
     links:
       - db:db
     depends_on:
@@ -89,7 +87,7 @@ services:
 
   celery-beat:
     build: .
-    command: celery -A core beat --loglevel=info
+    command: /bin/sh -c "rm -f celerybeat-schedule && celery -A core beat --loglevel=info"
     container_name: celery_beat_service
     volumes:
       - .:/code
@@ -114,6 +112,17 @@ services:
       - redis
       - web
       - celery
+    networks:
+      - django_network
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx_service
+    ports:
+      - "80:8000"
+    depends_on:
+      - web
     networks:
       - django_network
 
