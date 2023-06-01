@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-@clhagi(s6%*8pr)@3ynxuno9t8at8v!wbs2j!!$xm85^sfu&6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -225,3 +225,10 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+REDIS_HOST = os.getenv("REDIS_HOST", "redis_container_service")
+REDIS_PORT = os.getenv("REDIS_PORT", 6379)
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
+
+CELERY_BROKER_URL = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/0"
+CELERY_RESULT_BACKEND = f"redis://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"

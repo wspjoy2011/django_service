@@ -1,0 +1,126 @@
+version: '3.7'
+
+services:
+  db:
+    image: 'postgres:latest'
+    container_name: postgres_service
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - service_data:/var/lib/postgresql/data/
+    networks:
+      - django_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_service
+    ports:
+      - "3333:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    links:
+      - db:db
+    depends_on:
+      - db
+    networks:
+      - django_network
+
+  web:
+    restart: always
+    build: .
+    container_name: backend_service
+    command: ["/entrypoint.sh"]
+    environment:
+      - PYTHONUNBUFFERED=True
+    env_file:
+      - .env
+    volumes:
+      - .:/code
+    ports:
+      - "8080:8000"
+    links:
+      - db:db
+    depends_on:
+      - db
+    networks:
+      - django_network
+
+  redis:
+    image: "redis:alpine"
+    restart: always
+    container_name: redis_container_service
+    command: redis-server --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    ports:
+      - "6379:6379"
+    networks:
+      - django_network
+
+  redis-admin:
+    image: rediscommander/redis-commander:latest
+    container_name: redis-admin
+    hostname: redis-admin
+    ports:
+      - "8081:8081"
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - redis
+    networks:
+      - django_network
+
+  celery:
+    build: .
+    command: celery -A core worker --loglevel=info
+    container_name: celery_container_service
+    volumes:
+      - .:/code
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - web
+    networks:
+      - django_network
+
+  celery-beat:
+    build: .
+    command: celery -A core beat --loglevel=info
+    container_name: celery_beat_service
+    volumes:
+      - .:/code
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - web
+    networks:
+      - django_network
+
+  flower:
+    container_name: flower
+    image: mher/flower
+    command: celery -A core flower --broker=redis://redis_container_service:6379/0
+    environment:
+      - CELERY_BROKER_URL=redis://:eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81@redis_container_service:6379/0
+      - FLOWER_PORT=8082
+    ports:
+      - "8082:8082"
+    depends_on:
+      - redis
+      - web
+      - celery
+    networks:
+      - django_network
+
+volumes:
+  service_data:
+    driver: local
+
+networks:
+  django_network:
+    driver: bridge
