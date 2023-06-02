@@ -107,7 +107,7 @@ docker-compose down
 
 ## Accessing the Application
 
-* The Django application is accessible at `http://localhost:8080/`
+* The Django application is accessible at `http://localhost:80/`
 * The Redis Commander can be accessed at `http://localhost:8081/`
 * Flower (the Celery monitoring tool) is accessible at `http://localhost:8082/`
 * The PostgreSQL database can be accessed on `localhost` with port `5432`
